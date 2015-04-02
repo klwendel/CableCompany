@@ -1,0 +1,140 @@
+/* 
+    Created on : Feb 11, 2015, 1:39:24 PM
+    Author     : Kaleb
+*/
+
+/*Styles for body Element*/
+body{
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 12px;
+    background-color: #666666;
+    color: #2c2b2b;
+}
+
+/*Styles for the page Id*/
+#page{
+    width: 940px;
+    background-color: #ffffff;
+    margin: auto;
+    position: relative;
+}
+
+/*Styles for the header Id*/
+#header{
+    height: 160px;
+    background-image: url('../images/Banner.jpg');
+}
+
+/*Styles for content Id*/
+/*Styles for content Id*/
+#content{
+    margin: 10px;
+}
+
+/*Styles for the footer Id*/
+#footer{
+    height: 30px;
+    background-color: #2c2b2b;
+    color: #d7d7d7;
+    text-align: center;
+}
+
+/*Styles for login Id*/
+#login{
+    float: right;
+    width: 205px;
+}
+
+/*Styles for fieldset element*/
+fieldset{
+    padding: 3px;
+}
+
+/*Styles for login Class*/
+input.login{
+    width: 180px;
+}
+
+a.login{
+    float: right;
+    margin-right: 5px;
+    color: #d7d7d7;
+}
+
+a:hover.login{
+    color: #0000cc;
+}
+
+label.login{
+    display: inline-block;
+    width: 75px;
+}
+
+legend.login{
+    color: #d7d7d7;
+}
+
+/*Styles for login2 Class*/
+a.login2{
+    display: inline-block;
+    margin: 10px;
+}
+
+a:hover.login2{
+    color: #2c2b2b;
+}
+
+/*Styles for the label Class*/
+label.label{
+    display: inline-block;
+    width: 125px;
+    margin: 5px;
+    font-style: italic;
+}
+
+/*Styles for inputs*/
+input{
+    margin: .25em;
+}
+
+/*Styles for clears*/
+.clearRight{
+    clear: right;
+}
+
+/*Styles for jquery valdation errors*/
+label.error{
+    color: #ff0000;
+    font-size: 95%;
+}
+
+.error{
+    color: #ff0000;
+}
+
+/*Styles for navigation*/
+#navigation ul, #navigation li{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#navigation a {
+    background-color: #2c2b2b;
+    text-decoration: none;
+    text-indent: 10px;
+    border-right: 1px solid #d7d7d7;
+    border-top: 1px solid #d7d7d7;
+    color: #d7d7d7;
+}
+
+#navigation a:hover{
+    border: 1px solid #2c2b2b;
+    background-color: #d7d7d7;
+    color: #2c2b2b;
+}
+
+#navigationMenu{
+    min-height: 30px;
+    background-color: #2c2b2b;
+}
