@@ -1,7 +1,12 @@
 <%-- 
-    Document   : index.jsp
-    Created on : Feb 11, 2015, 1:17:32 PM
-    Author     : Kaleb
+    Document    : index.jsp
+    Created on  : Feb 11, 2015, 1:17:32 PM
+    Author      : Kaleb
+--%>
+<%--
+    Change log  :
+        Date: 4/6/2015
+        Desc: Commented out previous work regarding reading/writing users to a serialized file.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8" import="javaiii.wendel.cablecompany.user.*, java.io.*, java.util.ArrayList"%>
@@ -21,7 +26,9 @@
             log("INFO: index.jsp servletPath: " + request.getServletPath());
             log("INFO: index.jsp requestURI: " + request.getRequestURI());
             log("INFO: index.jsp requestURL: " + request.getRequestURL());
-            
+        %>
+<%--        
+        <%
             //Used to read from the .ser file.
             //Need to convert the relative path to absolute.
             String relativeSerPath = "/dataStorage/users.ser";
@@ -116,5 +123,6 @@
         <%
             }// end of if(userList.size() > 0)
         %>
+--%>
     </div><%-- end of content div --%>
     <%@ include file="includes/footer.html" %>
