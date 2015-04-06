@@ -3,6 +3,13 @@
  * @author Kaleb
  * @created on: 2/11/2015
  */
+
+/*
+Change Log:
+    Date:   4/6/2015  
+    Desc:   Removed properties used to recover the user profile.
+            Adjusted the class to become a JavaBean.
+*/
 package javaiii.wendel.cablecompany.user;
 import java.io.Serializable;
 
@@ -14,14 +21,16 @@ public class User implements Serializable
     private String firstName;
     private String lastName;
     private int role;
-    //Used to recover username.
-    private String securityQuestion;
-    private String securityAnser;
 
     //Constructors.
     public User()
     {
-
+        username = "Unknown";
+        password = "Unknown";
+        firstName = "Unknown";
+        lastName = "Unknown";
+        //Default value for an unkown role as -1 will not exist in the roles table.
+        role = -1;
     }
     
     public User(String username, String password)
@@ -120,38 +129,6 @@ public class User implements Serializable
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
-    }
-
-    /**
-     * @return the securityQuestion
-     */
-    public String getSecurityQuestion()
-    {
-        return securityQuestion;
-    }
-
-    /**
-     * @param securityQuestion the securityQuestion to set
-     */
-    public void setSecurityQuestion(String securityQuestion)
-    {
-        this.securityQuestion = securityQuestion;
-    }
-
-    /**
-     * @return the securityAnser
-     */
-    public String getSecurityAnser()
-    {
-        return securityAnser;
-    }
-
-    /**
-     * @param securityAnser the securityAnser to set
-     */
-    public void setSecurityAnser(String securityAnser)
-    {
-        this.securityAnser = securityAnser;
     }
 
     /**
