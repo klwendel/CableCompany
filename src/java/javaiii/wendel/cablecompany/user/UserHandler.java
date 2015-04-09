@@ -7,6 +7,9 @@
 Change Log:
     Date: 4/8/15
     Desc: Adjusted the class to include validation and data access methods for adding a user.
+
+    Date: 4/8/15 - Kaleb Wendel
+    Desc: Adjusted class to include data access method for searching for a user by id.
 */
 package javaiii.wendel.cablecompany.user;
 import java.sql.*;
@@ -93,7 +96,7 @@ public class UserHandler
         {
             System.out.println("ERROR: There was an error writing the user to the database:\n\t" + ex.getMessage() + "\n\tSQL State: " + ex.getSQLState());
             ex.printStackTrace();
-            if(ex.getSQLState() == "HY000")
+            if(ex.getSQLState().equals("HY000"))
             {
                 //Sets return value to -2 so we can know if the username already exists.
                 result = -2;
@@ -113,4 +116,48 @@ public class UserHandler
         }
         return result;
    }
+   
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    public static User searchUser(int userId)
+    {
+        User user = null;
+        Connection connection = DatabaseConnection.getDatabaseConnection();
+        try
+        {
+            String preparedSql = "CALL sp_get_user_by_userid(?)";
+            PreparedStatement statement = connection.prepareStatement(preparedSql);
+            statement.setInt(1, userId);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next())
+            {
+                user = new User();
+                user.setUserId(rs.getInt(1));
+                user.setUsername(rs.getString(2));
+                user.setFirstName(rs.getString(3));
+                user.setFirstName(rs.getString(4));
+            }
+        }
+        catch(SQLException ex)
+        {
+            System.out.println("ERROR: There was an error retreiving the user details:\n\t" + ex.getMessage() + "\n\tSQL State: " + ex.getSQLState());
+            ex.printStackTrace();
+        }   
+        finally
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ERROR: There was an error closing the Database Connection Stream.");
+                ex.printStackTrace();
+            }
+        }
+        return user;
+    }
 }

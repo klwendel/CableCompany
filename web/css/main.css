@@ -110,6 +110,7 @@ label.error{
 
 .error{
     color: #ff0000;
+    font-style: italic;
 }
 
 /*Styles for navigation*/

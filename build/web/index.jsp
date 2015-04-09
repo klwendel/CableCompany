@@ -7,6 +7,9 @@
     Change log  :
         Date: 4/6/2015
         Desc: Commented out previous work regarding reading/writing users to a serialized file.
+
+        Date: 4/8/2015 - Kaleb Wendel
+        Desc: Adjusted the navigation bar to include the SearchUser form.
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8" import="javaiii.wendel.cablecompany.user.*, java.io.*, java.util.ArrayList"%>
@@ -16,6 +19,7 @@
     <div id="navigationMenu">
         <ul id="navigation">
             <li><a href="/WendelCableCompany/loggedAdministrator/AddUser.jsp">Create New User</a></li>
+            <li><a href="/WendelCableCompany/loggedAdministrator/SearchUser.jsp">Find User</a></li>
         </ul>
     </div><%-- end of navigation div --%>
     <div id="content">

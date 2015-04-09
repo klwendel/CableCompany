@@ -8,6 +8,9 @@
 Change Log:
     Date: 4/6/2015 - Kaleb Wendel
     Desc: Adjusted page to implement Java EL to make the code more concise.
+    
+    Date: 4/8/2015 - Kaleb Wendel
+    Desc: Adjusted the navigation bar to include the SearchUser form.
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" import="javaiii.wendel.cablecompany.user.*, java.util.*"%>
 <!DOCTYPE html>
@@ -38,6 +41,7 @@ Change Log:
     <div id="navigationMenu">
         <ul id="navigation">
             <li><a href="/WendelCableCompany/index.jsp">Home</a></li>
+            <li><a href="/WendelCableCompany/loggedAdministrator/SearchUser.jsp">Find User</a></li>
         </ul>
     </div><%-- end of navigation div --%>
     <div id="content">
