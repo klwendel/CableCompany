@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Kaleb/NetBeansProjects/WendelCableCompany/src/java/javaiii/wendel/cablecompany/user/AddUser.java</file>
+            <file>file:/C:/Users/Kaleb/NetBeansProjects/WendelCableCompany/src/java/javaiii/wendel/cablecompany/data/DatabaseConnection.java</file>
+            <file>file:/C:/Users/Kaleb/NetBeansProjects/WendelCableCompany/web/loggedAdministrator/AddUser.jsp</file>
+            <file>file:/C:/Users/Kaleb/NetBeansProjects/WendelCableCompany/src/java/javaiii/wendel/cablecompany/user/UserHandler.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -16,6 +16,7 @@ import java.io.Serializable;
 public class User implements Serializable
 {
     //General variables.
+    private int userId;
     private String username;
     private String password;
     private String firstName;
@@ -25,6 +26,8 @@ public class User implements Serializable
     //Constructors.
     public User()
     {
+        //Default userId.
+        userId = -1;
         username = "Unknown";
         password = "Unknown";
         firstName = "Unknown";
@@ -145,5 +148,21 @@ public class User implements Serializable
     public void setRole(int role)
     {
         this.role = role;
+    }
+
+    /**
+     * @return the userId
+     */
+    public int getUserId()
+    {
+        return userId;
+    }
+
+    /**
+     * @param userId the userId to set
+     */
+    public void setUserId(int userId)
+    {
+        this.userId = userId;
     }
 }

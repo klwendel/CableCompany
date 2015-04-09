@@ -3,6 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
+/*
+Change Log:
+    Date:   4/6/2015
+    Desc:   Commented out code regarding writing to a serialized file.
+            Moved validation methods to the UserHandler class.
+*/
 package javaiii.wendel.cablecompany.user;
 
 import java.io.IOException;
@@ -14,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import javax.servlet.RequestDispatcher;
-import java.io.*;
+import javaiii.wendel.cablecompany.validation.*;
 
 /**
  *
@@ -49,113 +56,82 @@ public class AddUser extends HttpServlet
             log("INFO: AddUser.java requestURL: " + request.getRequestURL());
             //Used to determine if the data is valid.
             Boolean valid = true;
-            
             //HashMap used to store error messages.
             HashMap<String, String> errorMap = new HashMap<>();
-            
             //User object to be passed in the request.
             User newUser = null;
-            
-            //Used to write the user to the .ser file.       
-            //Need to conver the relative path to absolute.
-            String relativeSerPath = "/dataStorage/users.ser";
-            String absoluteSerPath = this.getServletContext().getRealPath(relativeSerPath);
-            
-            //Streams used to read data.
-            FileInputStream fileInput = null;
-            ObjectInputStream objectInput = null;
-            
-            //Streams used to write data.
-            FileOutputStream fileOutput = null;
-            ObjectOutputStream objectOutput = null;
-            
-            //Array to hold list of user objects.
-            ArrayList<User> userList = new ArrayList();
-            
             //Retrieves values entered by the user.
             String username = request.getParameter("username");
             String password = request.getParameter("password");
             String confirmPassword = request.getParameter("confirmPassword");
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
-          
-            //Data validation.
             
-            if(username.equals("") || username == null)
+            //Data validation.
+            if(!Validator.isNullOrEmpty(username))
             {
                 errorMap.put("username", "Username is required");
                 valid = false;
             }
-            else if(username.length() < 2 || username.length() > 60)
+            else if(!UserHandler.isValidUsername(username))
             {
-                errorMap.put("username", "Username must be greater than 2 characters but less than 60");
+                errorMap.put("username", "Username must be at least one character and less than 256");
                 valid = false;
             }
-            //Regex expression test.
-            //String.matches() internally uses Pattern and Matcher.
-            //The pattern below matches letters, numbers and underscores
-            //(^ = start of line | [\\p{Alnum}] = letters and numbers | {2,60} = min,max | $ = end of line | [] = beginning/end of character group)
-            else if(!username.matches("^[\\p{Alnum}]{2,60}$"))
+            else if(!UserHandler.isValidUsernameCharacters(username))
             {
-                errorMap.put("username", "Username must consist of only letters and/or numbers");
+                errorMap.put("username", "Username must consist of only letters, numbers and/or underscores");
                 valid = false;
             }
             
-            if(password.equals("") || password == null)
+            if(!Validator.isNullOrEmpty(password))
             {
                 errorMap.put("password", "Password is required");
-                errorMap.put("confirmPassword", "Password is required");
                 valid = false;
             }
-            else if(password.length() < 6 || password.length() > 60)
+            else if(!UserHandler.isValidPassword(password))
             {
-                errorMap.put("password", "Password must be greater than 6 characters but less than 60");
-                errorMap.put("confirmPassword", "Password must be greater than 6 characters but less than 60");
+                errorMap.put("password", "Password must be at least 8 characters and less than 60.");
                 valid = false;
+            }
+            else if(!UserHandler.isValidPasswordCharacters(password))
+            {
+                errorMap.put("password", "Password must consist of only letters, numbers and/or underscores");
+                valid = false;                
             }
             else if (!confirmPassword.equals(password))
             {
-                errorMap.put("password", "Password does not match");
-                errorMap.put("confirmPassword", "Password does not match");
+                errorMap.put("password", "Passwords do not match");
                 valid = false;
             }
-            //(^ = start of line | [\\w] = letters, numbers and underscore | {6,60} = min,max | $ = end of line | [] = beginning/end of character group)
-            else if(!password.matches("^[\\w]{6,60}$"))
-            {
-                errorMap.put("password", "Password must consist of only letters, numbers and/or underscores");
-                errorMap.put("confirmPassword", "Password must consist of only letters, numbers and/or underscores");
-                valid = false;                
-            }
             
-            if(firstName.equals("") ||  firstName == null)
+            if(!Validator.isNullOrEmpty(firstName))
             {
                 errorMap.put("firstName", "First name is required");
                 valid = false;
             }
-            else if(firstName.length() < 2 || firstName.length() > 60)
+            else if(!UserHandler.isValidFirstName(firstName))
             {
-                errorMap.put("firstName", "First name must be greater than 2 characters but less than 60");
+                errorMap.put("firstName", "First name must be at least 1 character and less than 128.");
                 valid = false;
             }            
-            //(^ = start of line | [\\p{Alpha] = letters | {2,60} = min,max | $ = end of line | [] = beginning/end of character group)
-            else if(!firstName.matches("^[\\p{Alpha}]{2,60}$"))
+            else if(!UserHandler.isValidFirstNameCharacters(firstName))
             {
                 errorMap.put("firstName", "First name must consist of only letters");
                 valid = false;
             }
             
-            if(lastName.equals("")|| lastName == null)
+            if(!Validator.isNullOrEmpty(lastName))
             {
                 errorMap.put("lastName", "Last name is required");
                 valid = false;
             }
-            else if(lastName.length() < 2 || lastName.length() > 60)
+            else if(!UserHandler.isValidLastName(lastName))
             {
-                errorMap.put("lastName", "Last name must be greater than 2 characters but less than 60");
+                errorMap.put("lastName", "Last name must be at least 1 character and less than 128.");
                 valid = false;
             }
-            //(^ = start of line | [\\p{Alpha] = letters | {2,60} = min,max | $ = end of line | [] = beginning/end of character group)
-            else if(!lastName.matches("^[\\p{Alpha}]{2,60}$"))
+            else if(!UserHandler.isValidLastNameCharacters(lastName))
             {
                 errorMap.put("lastName", "Last name must consist of only letters");
                 valid = false;
@@ -165,99 +141,23 @@ public class AddUser extends HttpServlet
             {
                 //Create user object.
                 newUser = new User(username, password, firstName, lastName);
-                errorMap.put("valid","Successfully created user!");
-
-                //Clear userList.
-                userList.clear();
-                
-                //Read data from the file.
-                if(new File(absoluteSerPath).exists())
+                int userId = UserHandler.addUser(newUser);
+                if(userId == -1)
                 {
-                //Read data from the file and populate user array list.
-                    try
-                    {
-                        //Create streams to read from .ser file.
-                        fileInput = new FileInputStream(absoluteSerPath);
-                        objectInput = new ObjectInputStream(fileInput);
-
-                        try
-                        {
-                            //Read data from .ser file and place within the array list.
-                            //Reads until EOFException.
-                            while(true)
-                            {
-                                userList = (ArrayList<User>)objectInput.readObject();
-                                log("INFO: Array list read from file.");
-                            }
-                        }
-                        catch (ClassNotFoundException ex) 
-                        {
-                            log("ERROR: The class [User] was not found and the data was not read.");
-                        }
-                        catch (EOFException ex) 
-                        {
-                            log("INFO: The end of the file [users.ser] was met.");
-                        }
-                    }
-                    catch(FileNotFoundException ex)
-                    {
-                        log("ERROR: The input file [users.ser] was not found.");
-                    }
-                    catch(IOException ex)
-                    {
-                     log("ERROR: There was an error reading data from the file [users.ser]." + ex.hashCode());
-                    }
-                    finally
-                    {
-                        try
-                        {
-                            objectInput.close();
-                        }
-                        catch(IOException ex)
-                        {
-                            log("ERROR: There was an error closing the ObjectInputStream [objectInput].");
-                        }
-                        catch(NullPointerException ex)
-                        {
-                            log("ERROR: The ObjectInputStream [objectInput] was null.");
-                        }
-                    }
-                }//End of if(new File(absoluteSerPath).exists())
-                //Write data to the file.
-                try
-                {
-                    //Create streams to output data to serialized file.
-                    fileOutput = new FileOutputStream(absoluteSerPath);
-                    objectOutput = new ObjectOutputStream(fileOutput);
-
-                    //Add new user to array list.
-                    userList.add(newUser);
-                    log("INFO: Username added to userList: " + newUser.getUsername());
-                    log("INFO: Objects in userList: " + userList.size());
-
-                    //Write array list to the file.
-                    objectOutput.writeObject(userList);
-                    log("INFO: userList written to the file.");
+                    errorMap.put("error", "There was an error adding the user.\nPlease try again.");
                 }
-                catch(IOException ex)
+                else if(userId == -2)
                 {
-                    log("ERROR: There was an error writing the new User to the disk.");
+                    errorMap.put("error", "That username has already been used.\nPlease try again with a different username.");
                 }
-                finally
+                else if(userId > 0)
                 {
-                    try
-                    {
-                        objectOutput.close();
-                    }
-                    catch(IOException ex)
-                    {
-                        log("ERROR: There was an error closing the ObjectOutputStream[objectOutput].");
-                    }  
+                    errorMap.put("valid","Successfully created user!");
+                    newUser.setUserId(userId);
                 }
             }//End of if(valid)
             
             //Adding attributes to the request object.
-            request.setAttribute("valid", valid);
             request.setAttribute("errorMap", errorMap);
             request.setAttribute("user", newUser);
             

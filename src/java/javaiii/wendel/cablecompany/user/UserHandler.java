@@ -3,63 +3,114 @@
  * @author Kaleb
  * @created on: 2/11/2015
  */
+/*
+Change Log:
+    Date: 4/8/15
+    Desc: Adjusted the class to include validation and data access methods for adding a user.
+*/
 package javaiii.wendel.cablecompany.user;
-import java.util.*;
+import java.sql.*;
+import javaiii.wendel.cablecompany.data.DatabaseConnection;
+import javaiii.wendel.cablecompany.validation.*;
 
 public class UserHandler
 {
-    //HashMap used to identify role values.
-    public HashMap<Integer, String> roleMap;
-    //Array list to hold list of users.
-    private ArrayList<User> userList;
-    
-    public UserHandler()
-    {
-        //Fills roleMap with roles as a substitution for a lookup table.
-        roleMap = new HashMap();
-        roleMap.put(1, "Administrator");
-        roleMap.put(2, "Customer");
-        //Fills list of users with hardcoded values.
-        userList = new ArrayList();
-        userList.add(new Administrator("admin","adpassword", 1, "Kaleb", "Wendel", "00001"));
-        userList.add(new Customer("larry","howdy01", 2, "Test", "Customer", 100200, "123 Fake Avenue", "", "", "Cedar Rapids", "IA", "52403", "test@test.com", "3190000000"));
-    }
-    
-    //Returns current list of users.
-    public ArrayList<User> getUserList()
-    {
-        return userList;
-    }
-
-    //Verify if user exists.
-    //Returns true or false if the username is found.
-    public boolean exists(String username)
-    {
-        boolean exists = false;
-        for(User user: userList)
+   public static boolean isValidUsername(String value)
+   {
+       int minValue = 1;
+       int maxValue = 256;
+       return Validator.isValidLength(value, minValue, maxValue);
+   }
+   
+   public static boolean isValidUsernameCharacters(String value)
+   {
+        //Regex expression test.
+        //String.matches() internally uses Pattern and Matcher.
+        //The pattern below matches letters, numbers and underscores
+        //(^ = start of line | [\\w] = letters, numbers and underscore | {1,256} = min,max | $ = end of line | [] = beginning/end of character group)
+        return value.matches("^[\\w]{1,256}$");
+   }
+   public static boolean isValidFirstName(String value)
+   {
+        int minLength = 1;
+        int maxLenght = 128;
+        return Validator.isValidLength(value, minLength, maxLenght);
+   }
+   
+   public static boolean isValidFirstNameCharacters(String value)
+   {
+        //(^ = start of line | [\\p{Alpha] = letters | {1,128} = min,max | $ = end of line | [] = beginning/end of character group)
+        return value.matches("^[\\p{Alpha}]{1,128}$");
+   }
+   public static boolean isValidLastName(String value)
+   {
+        int minLength = 1;
+        int maxLenght = 128;
+        return Validator.isValidLength(value, minLength, maxLenght);
+   }
+   
+   public static boolean isValidLastNameCharacters(String value)
+   {
+        //(^ = start of line | [\\p{Alpha] = letters | {1,128} = min,max | $ = end of line | [] = beginning/end of character group)
+        return value.matches("^[\\p{Alpha}]{1,128}$");
+   }
+   
+   public static boolean isValidPassword(String value)
+   {
+        int minValue = 8;
+        int maxValue = 40;
+        return Validator.isValidLength(value, minValue, maxValue);
+   }
+   
+   public static boolean isValidPasswordCharacters(String value)
+   {
+        //(^ = start of line | [\\w] = letters, numbers and underscore | {8,60} = min,max | $ = end of line | [] = beginning/end of character group)
+        return value.matches("^[\\w]{8,60}$");
+   }
+   
+   public static int addUser(User user)
+   {
+        //Default value used for when the upate fails.
+        int result = -1;
+        Connection connection = DatabaseConnection.getDatabaseConnection();
+        try
         {
-            if(user.getUsername().equals(username))
+            String preparedSql = "CALL sp_add_companyuser(?,?,?,?)";
+            PreparedStatement statement = connection.prepareStatement(preparedSql);
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getLastName());
+            statement.setString(4, user.getPassword());
+            
+            ResultSet rs = statement.executeQuery();
+            while(rs.next())
             {
-                exists = true;
+                //LAST_INSERT_ID is the new product id returned from the add_product procedure.
+                result = rs.getInt("LAST_INSERT_ID()");
             }
         }
-        return exists;
-    }
-    
-    //Verify users credentials.
-    //Returns the User object if username/password values match. 
-    public User verifyCredentials(User loginUser)
-    {
-        for(User user: userList)
+        catch(SQLException ex)
         {
-            if(loginUser.getUsername().equals(user.getUsername()))
+            System.out.println("ERROR: There was an error writing the user to the database:\n\t" + ex.getMessage() + "\n\tSQL State: " + ex.getSQLState());
+            ex.printStackTrace();
+            if(ex.getSQLState() == "HY000")
             {
-                if(loginUser.getPassword().equals(user.getPassword()))
-                {
-                    return user;
-                }
+                //Sets return value to -2 so we can know if the username already exists.
+                result = -2;
+            }
+        }   
+        finally
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ERROR: There was an error closing the Database Connection Stream.");
+                ex.printStackTrace();
             }
         }
-        return null;
-    }
+        return result;
+   }
 }
