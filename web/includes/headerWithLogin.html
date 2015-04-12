@@ -4,6 +4,11 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+<!--
+Change Log:
+    Date: 4/12/15 - Kaleb
+    Desc: Adjusted the form to point to the Login.java servlet rather than the Login.jsp.
+-->
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Wendel Cable Company</title>
@@ -16,7 +21,7 @@ and open the template in the editor.
 <body>
     <div id="page">
         <div id="header">
-            <form id="login" name="login" action ="Login.jsp" method="post">
+            <form id="login" name="login" action ="/WendelCableCompany/Login" method="post">
                 <fieldset>
                     <legend class="login">User Login</legend>
                     <input class="login" type="text" placeholder="username" id="username" name="username"></input>

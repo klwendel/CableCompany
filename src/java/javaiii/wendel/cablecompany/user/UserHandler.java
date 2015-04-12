@@ -10,6 +10,9 @@ Change Log:
 
     Date: 4/8/15 - Kaleb Wendel
     Desc: Adjusted class to include data access method for searching for a user by id.
+
+    Date: 4/12/15 - Kaleb
+    Desc: Adjusted class to include data access method for user login.
 */
 package javaiii.wendel.cablecompany.user;
 import java.sql.*;
@@ -138,12 +141,52 @@ public class UserHandler
                 user.setUserId(rs.getInt(1));
                 user.setUsername(rs.getString(2));
                 user.setFirstName(rs.getString(3));
-                user.setFirstName(rs.getString(4));
+                user.setLastName(rs.getString(4));
             }
         }
         catch(SQLException ex)
         {
             System.out.println("ERROR: There was an error retreiving the user details:\n\t" + ex.getMessage() + "\n\tSQL State: " + ex.getSQLState());
+            ex.printStackTrace();
+        }   
+        finally
+        {
+            try
+            {
+                connection.close();
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ERROR: There was an error closing the Database Connection Stream.");
+                ex.printStackTrace();
+            }
+        }
+        return user;
+    }
+    
+    public static User validateUser(String username, String password)
+    {
+        User user = null;
+        Connection connection = DatabaseConnection.getDatabaseConnection();
+        try
+        {
+            String preparedSql = "CALL sp_get_user_by_name_password(?,?)";
+            PreparedStatement statement = connection.prepareStatement(preparedSql);
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet rs = statement.executeQuery();
+            while(rs.next())
+            {
+                user = new User();
+                user.setUserId(rs.getInt(1));
+                user.setUsername(rs.getString(2));
+                user.setFirstName(rs.getString(3));
+                user.setLastName(rs.getString(4));
+            }
+        }
+        catch(SQLException ex)
+        {
+            System.out.println("ERROR: There was an error retreiving the user details during the login procedure:\n\t" + ex.getMessage() + "\n\tSQL State: " + ex.getSQLState());
             ex.printStackTrace();
         }   
         finally

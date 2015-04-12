@@ -3,118 +3,81 @@
     Created on : Feb 15, 2015, 2:18:06 PM
     Author     : Kaleb
 --%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8" import="javaiii.wendel.cablecompany.user.*"%>
+<%--
+Change Log:
+    Date: 4/12/15 - Kaleb
+    Desc: Adjusted class to adhere to MVC design patter.
+--%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="javaiii.wendel.cablecompany.user.*, java.util.*"%>
 <!DOCTYPE html>
 <html>
+       <%
+        log("INFO: Login.jsp requested.");  
+        //Used to identify where the page is in the web application.
+        log("INFO: Login.jsp contextPath: " + request.getContextPath());
+        log("INFO: Login.jsp servletPath: " + request.getServletPath());
+        log("INFO: Login.jsp requestURI: " + request.getRequestURI());
+        log("INFO: Login.jsp requestURL: " + request.getRequestURL());
+        
+        //Getting request attributes added in Login.java servlet processing.
+        //If we have not reached the servlet the objects are instantiated to prevent null pointers.
+        HashMap<String, String> errorMap = (HashMap<String, String>)request.getAttribute("errorMap");
+        if(errorMap == null)
+        {
+            errorMap = new HashMap();
+        }
+        
+        User user = (User)request.getAttribute("user");
+        if(user == null)
+        {
+            user = new User();
+        }
+    %>
     <%@ include file="../includes/header.html" %>
     <div id="navigationMenu">
         <ul id="navigation">
             <li><a href="/WendelCableCompany/index.jsp">Home</a></li>
             <li><a href="/WendelCableCompany/loggedAdministrator/AddUser.jsp">Create New User</a></li>
+            <li><a href="/WendelCableCompany/loggedAdministrator/SearchUser.jsp">Find User</a></li>
         </ul>
     </div><%-- end of navigation div --%>
     <div id="content">
         <%
-            //Instantiate UserHandler.
-            UserHandler userHandler = new UserHandler();
-            //Store request parameters.
-            String username = request.getParameter("username");
-            String password = request.getParameter("password");
-            //Variable used to display additional information during development.
-            boolean devStatus = false;
-            //Display list of current users.
-            if(devStatus == true)
+            //Tests to determine if the entry was valid.
+            if(errorMap.containsKey("valid"))
             {
         %>
-        <p>***************DEV VARIABLES***************</p>
-        <%
-                for(User user: userHandler.getUserList())
-                {
-        %>
-        <p><%= user.getUsername() %></p>
-        <p><%= user.getFirstName() %></p>
-        <p><%= user.getLastName() %></p>
-        <p><%= user.getRole() %></p>
-        <p>----------End of User----------</p>
-        <%
-                }
-        %>
-        <p>*************END DEV VARIABLES*************</p>        
-        <%
-            }
-            //Verify if user exists.
-            User user = userHandler.verifyCredentials(new User(username, password));
-            if(user != null)
-            {
-                if(user instanceof Administrator)
-                {
-        %>
-        <h2>Welcome back, <%= user.getUsername() %>!</h2>
-        <h3>Below is information in your user record:</h3>
+        <h3>Welcome, ${user.firstName} ${user.lastName}!</h3>
+        <h3>${errorMap["valid"]}</h3>
+        <label class="label">User Id:</label>
+        <label>${user.userId}</label><br>
         <label class="label">Username:</label>
-        <label><%= ((Administrator)user).getUsername() %></label><br>
+        <label>${user.username}</label><br>
         <label class="label">First Name:</label>
-        <label><%= ((Administrator)user).getFirstName() %></label><br>
+        <label>${user.firstName}</label><br>
         <label class="label">Last Name:</label>
-        <label><%= ((Administrator)user).getLastName() %></label><br>
-        <label class="label">Role:</label>
-        <label><%= userHandler.roleMap.get(((Administrator)user).getRole()) %></label><br>
-        <label class="label">Employee Id:</label>
-        <label><%= ((Administrator)user).getEmployeeId() %></label><br>
-        <%
-                }
-                else if(user instanceof Customer )
-                {
-        %>
-        <h2>Welcome back, <%= user.getUsername() %>!</h2>
-        <h3>Below is information in your user record:</h3>
-        <label class="label">Username:</label>
-        <label><%= ((Customer)user).getUsername() %></label><br>
-        <label class="label">First Name:</label>
-        <label><%= ((Customer)user).getFirstName() %></label><br>
-        <label class="label">Last Name:</label>
-        <label><%= ((Customer)user).getLastName() %></label><br>
-        <label class="label">Account Number:</label
-        <label><%= ((Customer)user).getAccountNumber() %></label><br>
-        <label class="label">Role:</label>
-        <label><%= userHandler.roleMap.get(((Customer)user).getRole()) %></label><br>
-        <label class="label">Address1:</label>
-        <label><%= ((Customer)user).getAddress1() %></label><br>
-        <label class="label">Address2:</label>
-        <label><%= ((Customer)user).getAddress2() %></label><br>
-        <label class="label">Address3:</label>
-        <label><%= ((Customer)user).getAddress3() %></label><br>
-        <label class="label">City:</label>
-        <label><%= ((Customer)user).getCity() %></label><br>
-        <label class="label">State:</label>
-        <label><%= ((Customer)user).getState() %></label><br>
-        <label class="label">Zip:</label>
-        <label><%= ((Customer)user).getZip() %></label><br>
-        <label class="label">Email:</label>
-        <label><%= ((Customer)user).getEmailAddress() %></label><br>
-        <label class="label">Contact Phone:</label>
-        <label><%= ((Customer)user).getContactPhone() %></label><br>
-        <%                            
-                }
+        <label>${user.lastName}</label><br>
+        <%        
             }
             else
             {
         %>
-            <h3 class="error">Invalid username and/or password. Please verify you are using the correct username and password.</h3>
-            <form id="login2" name="login" action ="" method="post">
-                <fieldset>
-                    <legend>User Login</legend>
-                    <label class="login" for="username">Username:</label>
-                    <input class="login" type="text" id="username" name="username"></input><br>
-                    <label class="login" for="password">Password:</label>
-                    <input class="login" type="password" id="password" name="password"></input><br>
-                    <input type="submit" value="Login">
-                    <a class="login2" href="RecoverUser.jsp" title="Reset Password">Forgot Password?</a>
-                </fieldset>
-            </form>
-        <%            
-            }
-        %>
+        <h3 class="error">${errorMap.containsKey("error") ? errorMap["error"] : ""}</h3>
+        <form id="login2" name="login2" action ="/WendelCableCompany/Login" method="get">
+            <fieldset>
+                <legend>User Login:</legend>
+                <label class="label" for="username">Username:</label>
+                <input id="username" name="username" type="text" value="${param.username}" />
+                <label class="error" for="username">${errorMap.containsKey("username") ? errorMap["username"] : ""}</label><br>
+                
+                <label class="label" for="password">Password:</label>
+                <input id="password" name="password" type="password" value="" />
+                <label class="error" for="password">${errorMap.containsKey("password") ? errorMap["password"] : ""}</label><br>
+                <input type="submit" value="Login">
+                <%
+            }//end of if(errorMap.containsKey("valid"))
+                %>
+            </fieldset>
+        </form>
     </div><%-- end of content div --%>
     <%@ include file="includes/footer.html" %>

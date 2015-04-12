@@ -42,7 +42,7 @@
             if(errorMap.containsKey("valid"))
             {
         %>
-        <h2>${errorMap["valid"]}</h2>
+        <h3>${errorMap["valid"]}</h3>
         <label class="label">Username:</label>
         <label>${user.username}</label><br>
         <label class="label">First Name:</label>
@@ -54,7 +54,7 @@
             else
             {
         %>
-        <h2 class="error">${errorMap.containsKey("error") ? errorMap["error"] : ""}</h2>
+        <h3 class="error">${errorMap.containsKey("error") ? errorMap["error"] : ""}</h3>
         <form id="searchUser" name="searchUser" action ="/WendelCableCompany/SearchUser" method="get">
             <fieldset>
                 <legend>Find User By User Id:</legend>

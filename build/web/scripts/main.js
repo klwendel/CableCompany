@@ -25,22 +25,6 @@ $(document).ready(function(){
         }
     });
     
-    //Validation for all login forms other than index.jsp
-    $('#login2').validate({
-        rules: {
-            username: {
-                required: true
-            },
-            password: {
-                required: true
-            }
-        },
-        messages: {
-            username: 'Username is required.',
-            password: 'Password is required.'
-        }
-    });
-    
     //Provides behavior for the navigation bar.
     $('#navigation').navPlugin({
             'itemWidth': 150,

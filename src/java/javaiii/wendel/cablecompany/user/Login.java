@@ -4,35 +4,30 @@
  * and open the template in the editor.
  */
 
-/*
-Change Log:
-    Date:   4/6/2015
-    Desc:   Deleted code regarding writing to a serialized file.
-            Moved validation methods to the UserHandler class.
-*/
 package javaiii.wendel.cablecompany.user;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import javaiii.wendel.cablecompany.validation.Validator;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import javax.servlet.RequestDispatcher;
-import javaiii.wendel.cablecompany.validation.*;
 
 /**
  *
  * @author Kaleb
  */
-@WebServlet(name = "AddUser", urlPatterns =
+@WebServlet(name = "Login", urlPatterns =
 {
-    "/AddUser"
+    "/Login"
 })
-public class AddUser extends HttpServlet
+public class Login extends HttpServlet
 {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -46,31 +41,26 @@ public class AddUser extends HttpServlet
             throws ServletException, IOException
     {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter())
-        {
-            log("INFO: AddUser.java requested.");
+            log("INFO: Login.java requested.");
             //Used to identify where the page is in the web application.
-            log("INFO: AddUser.java contextPath: " + request.getContextPath());
-            log("INFO: AddUser.java servletPath: " + request.getServletPath());
-            log("INFO: AddUser.java requestURI: " + request.getRequestURI());
-            log("INFO: AddUser.java requestURL: " + request.getRequestURL());
+            log("INFO: Login.java contextPath: " + request.getContextPath());
+            log("INFO: Login.java servletPath: " + request.getServletPath());
+            log("INFO: Login.java requestURI: " + request.getRequestURI());
+            log("INFO: Login.java requestURL: " + request.getRequestURL());
             //Used to determine if the data is valid.
             Boolean valid = true;
             //HashMap used to store error messages.
             HashMap<String, String> errorMap = new HashMap<>();
-            //User object to be passed in the request.
-            User newUser = null;
+            //User object to be pssed in the request.
+            User user = null;
             //Retrieves values entered by the user.
             String username = request.getParameter("username");
             String password = request.getParameter("password");
-            String confirmPassword = request.getParameter("confirmPassword");
-            String firstName = request.getParameter("firstName");
-            String lastName = request.getParameter("lastName");
             
             //Data validation.
             if(!Validator.isNullOrEmpty(username))
             {
-                errorMap.put("username", "Username is required");
+                errorMap.put("username", "Username is required servlet");
                 valid = false;
             }
             else if(!UserHandler.isValidUsername(username))
@@ -78,15 +68,10 @@ public class AddUser extends HttpServlet
                 errorMap.put("username", "Username must be at least one character and less than 256");
                 valid = false;
             }
-            else if(!UserHandler.isValidUsernameCharacters(username))
-            {
-                errorMap.put("username", "Username must consist of only letters, numbers and/or underscores");
-                valid = false;
-            }
             
             if(!Validator.isNullOrEmpty(password))
             {
-                errorMap.put("password", "Password is required");
+                errorMap.put("password", "Password is required servlet");
                 valid = false;
             }
             else if(!UserHandler.isValidPassword(password))
@@ -94,78 +79,28 @@ public class AddUser extends HttpServlet
                 errorMap.put("password", "Password must be at least 8 characters and less than 40.");
                 valid = false;
             }
-            else if(!UserHandler.isValidPasswordCharacters(password))
-            {
-                errorMap.put("password", "Password must consist of only letters, numbers and/or underscores");
-                valid = false;                
-            }
-            else if (!confirmPassword.equals(password))
-            {
-                errorMap.put("password", "Passwords do not match");
-                valid = false;
-            }
-            
-            if(!Validator.isNullOrEmpty(firstName))
-            {
-                errorMap.put("firstName", "First name is required");
-                valid = false;
-            }
-            else if(!UserHandler.isValidFirstName(firstName))
-            {
-                errorMap.put("firstName", "First name must be at least 1 character and less than 128.");
-                valid = false;
-            }            
-            else if(!UserHandler.isValidFirstNameCharacters(firstName))
-            {
-                errorMap.put("firstName", "First name must consist of only letters");
-                valid = false;
-            }
-            
-            if(!Validator.isNullOrEmpty(lastName))
-            {
-                errorMap.put("lastName", "Last name is required");
-                valid = false;
-            }
-            else if(!UserHandler.isValidLastName(lastName))
-            {
-                errorMap.put("lastName", "Last name must be at least 1 character and less than 128.");
-                valid = false;
-            }
-            else if(!UserHandler.isValidLastNameCharacters(lastName))
-            {
-                errorMap.put("lastName", "Last name must consist of only letters");
-                valid = false;
-            }
             
             if(valid)
             {
-                //Create user object.
-                newUser = new User(username, password, firstName, lastName);
-                int userId = UserHandler.addUser(newUser);
-                if(userId == -1)
+                user = UserHandler.validateUser(username, password);
+                if(user == null)
                 {
-                    errorMap.put("error", "There was an error adding the user.\nPlease try again.");
+                    errorMap.put("error", "Invalid username or password.\nPlease try again.");
                 }
-                else if(userId == -2)
+                else
                 {
-                    errorMap.put("error", "That username has already been used.\nPlease try again with a different username.");
-                }
-                else if(userId > 0)
-                {
-                    errorMap.put("valid","Successfully created user!");
-                    newUser.setUserId(userId);
+                    errorMap.put("valid","User details:");
                 }
             }//End of if(valid)
             
             //Adding attributes to the request object.
             request.setAttribute("errorMap", errorMap);
-            request.setAttribute("user", newUser);
+            request.setAttribute("user", user);
             
             //Passes request back to AddUser.jsp
-            String relativePath = "/loggedAdministrator/AddUser.jsp";
+            String relativePath = "/Login.jsp";
             RequestDispatcher rd = getServletContext().getRequestDispatcher(relativePath);
             rd.forward(request, response);
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -209,4 +144,5 @@ public class AddUser extends HttpServlet
     {
         return "Short description";
     }// </editor-fold>
+
 }

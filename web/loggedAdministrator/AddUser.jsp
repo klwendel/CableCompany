@@ -50,7 +50,7 @@ Change Log:
             if(errorMap.containsKey("valid"))
             {
         %>
-        <h2>${errorMap["valid"]}</h2>
+        <h3>${errorMap["valid"]}</h3>
         <label class="label">User Id:</label>
         <label>${user.userId}</label><br>
         <label class="label">Username:</label>
@@ -64,7 +64,7 @@ Change Log:
             else
             {
         %>
-        <h2 class="error">${errorMap.containsKey("error") ? errorMap["error"] : ""}</h2>
+        <h3 class="error">${errorMap.containsKey("error") ? errorMap["error"] : ""}</h3>
         <form id="addUser" name="addUser" action ="/WendelCableCompany/AddUser" method="get">
             <fieldset>
                 <legend>New User Entry</legend>
