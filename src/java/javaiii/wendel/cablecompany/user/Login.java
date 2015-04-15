@@ -60,7 +60,7 @@ public class Login extends HttpServlet
             //Data validation.
             if(!Validator.isNullOrEmpty(username))
             {
-                errorMap.put("username", "Username is required servlet");
+                errorMap.put("username", "Username is required.");
                 valid = false;
             }
             else if(!UserHandler.isValidUsername(username))
@@ -71,7 +71,7 @@ public class Login extends HttpServlet
             
             if(!Validator.isNullOrEmpty(password))
             {
-                errorMap.put("password", "Password is required servlet");
+                errorMap.put("password", "Password is required.");
                 valid = false;
             }
             else if(!UserHandler.isValidPassword(password))

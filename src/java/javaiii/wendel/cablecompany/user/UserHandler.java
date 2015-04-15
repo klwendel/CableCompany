@@ -32,9 +32,9 @@ public class UserHandler
    {
         //Regex expression test.
         //String.matches() internally uses Pattern and Matcher.
-        //The pattern below matches letters, numbers and underscores
+        //The pattern below matches letters, numbers, underscores and at least one letter.
         //(^ = start of line | [\\w] = letters, numbers and underscore | {1,256} = min,max | $ = end of line | [] = beginning/end of character group)
-        return value.matches("^[\\w]{1,256}$");
+        return value.matches("^([\\p{Alpha}]{1,})([\\w]){1,256}$");
    }
    public static boolean isValidFirstName(String value)
    {
@@ -46,6 +46,7 @@ public class UserHandler
    public static boolean isValidFirstNameCharacters(String value)
    {
         //(^ = start of line | [\\p{Alpha] = letters | {1,128} = min,max | $ = end of line | [] = beginning/end of character group)
+        //Letters only.
         return value.matches("^[\\p{Alpha}]{1,128}$");
    }
    public static boolean isValidLastName(String value)
@@ -57,8 +58,8 @@ public class UserHandler
    
    public static boolean isValidLastNameCharacters(String value)
    {
-        //(^ = start of line | [\\p{Alpha] = letters | {1,128} = min,max | $ = end of line | [] = beginning/end of character group)
-        return value.matches("^[\\p{Alpha}]{1,128}$");
+        //Letters, apostrophes, hyphens, spaces and at least one letter.
+        return value.matches("^([\\p{Alpha}]{1,})([\\p{Alpha}[' -]]){1,128}$");
    }
    
    public static boolean isValidPassword(String value)
@@ -70,8 +71,8 @@ public class UserHandler
    
    public static boolean isValidPasswordCharacters(String value)
    {
-        //(^ = start of line | [\\w] = letters, numbers and underscore | {8,60} = min,max | $ = end of line | [] = beginning/end of character group)
-        return value.matches("^[\\w]{8,60}$");
+        //(^ = start of line | [\\w] = letters, numbers and underscore | {8,40} = min,max | $ = end of line | [] = beginning/end of character group)
+        return value.matches("^[\\w]{8,40}$");
    }
    
    public static int addUser(User user)

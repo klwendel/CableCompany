@@ -80,8 +80,7 @@ public class AddUser extends HttpServlet
             }
             else if(!UserHandler.isValidUsernameCharacters(username))
             {
-                errorMap.put("username", "Username must consist of only letters, numbers and/or underscores");
-                valid = false;
+                errorMap.put("username", "Username must consist of at least one letter and can contain numbers and/or underscores.");                valid = false;
             }
             
             if(!Validator.isNullOrEmpty(password))
@@ -133,7 +132,7 @@ public class AddUser extends HttpServlet
             }
             else if(!UserHandler.isValidLastNameCharacters(lastName))
             {
-                errorMap.put("lastName", "Last name must consist of only letters");
+                errorMap.put("lastName", "Last name must consist of at least one letter and can contain apostrophes, hyphens and/or spaces.");
                 valid = false;
             }
             

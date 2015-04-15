@@ -33,7 +33,7 @@
     <div id="navigationMenu">
         <ul id="navigation">
             <li><a href="/WendelCableCompany/index.jsp">Home</a></li>
-            <li><a href="/WendelCableCompany/loggedAdministrator/AddUser.jsp">Add User</a></li>
+            <li><a href="/WendelCableCompany/loggedAdministrator/AddUser.jsp">Create New User</a></li>
         </ul>
     </div><%-- end of navigation div --%>
     <div id="content">
